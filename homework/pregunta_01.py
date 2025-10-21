@@ -71,3 +71,26 @@ def pregunta_01():
 
 
     """
+    import os
+    import pandas as pd  
+
+    def load_dataset(base_path):
+        data = []
+
+        for sentiment in ["negative", "positive", "neutral"]:
+            folder = os.path.join(base_path, sentiment)
+            for filename in os.listdir(folder):
+                if filename.endswith(".txt"):
+                    file_path = os.path.join(folder, filename)
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        phrase = f.read().strip()
+                        data.append({"phrase": phrase, "target": sentiment})
+
+        return pd.DataFrame(data)
+    
+    os.makedirs("files/output", exist_ok=True)
+    train_df = load_dataset("files/input/train")
+    train_df.to_csv("files/output/train_dataset.csv", index=False)
+
+    test_df = load_dataset('files/input/test')
+    test_df.to_csv("files/output/test_dataset.csv", index=True)
